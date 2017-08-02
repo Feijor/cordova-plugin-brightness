@@ -30,7 +30,7 @@ Using this plugin requires [Cordova iOS](https://github.com/apache/cordova-ios).
     // prevents sleep
     brightness.setKeepScreenOn(true);
 
-* Check [source](https://github.com/mgcrea/cordova-plugin-brightness/tree/master/www/brightness.js) for additional configuration.
+* Check [source](https://github.com/Feijor/cordova-plugin-brightness/tree/master/www/brightness.js) for additional configuration.
 
 
 ## Communication
