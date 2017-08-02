@@ -6,21 +6,17 @@
       version="0.1.5">
     <name>Brightness</name>
 
-	<author>Evgeniy Lukovsky</author>
+	<author>Feijor</author>
 
 	<license>MIT</license>
 
 	<description>
-		This plugin gives you the ability to get and set the screen brightness
+		This plugin gives you the ability to get and set the device brightness
 	</description>
 
     <js-module src="www/brightness.js" name="Brightness">
         <clobbers target="cordova.plugins.brightness" />
     </js-module>
-
-	<info>
-		This plugin gives you the ability to get and set the screen brightness. Also recently I have added the function for keep screen on.
-	</info>
 
     <!-- android -->
     <platform name="android">
