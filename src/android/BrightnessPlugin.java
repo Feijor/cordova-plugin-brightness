@@ -6,6 +6,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import android.app.Activity;
+import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 import android.view.WindowManager.LayoutParams;
 import android.view.WindowManager;
@@ -109,24 +111,37 @@ public class BrightnessPlugin extends CordovaPlugin {
   Context myContext;
 
   private boolean setBrightness(JSONArray args, CallbackContext callbackContext) {
+	try {
+		String value = args.getString(0);
+		int brightness =  Integer.parseInt(value);
 
+		ContentResolver resolver = this.cordova.getActivity().getContentResolver();
+		Context ApplicationContext = this.cordova.getActivity().getApplicationContext();
 
-		try {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			if (Settings.System.canWrite(ApplicationContext)) {
 
-      String value = args.getString(0);
-      int brightness =  Integer.parseInt(value);
+				Settings.System.putInt(resolver, Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
+				Settings.System.putInt(resolver, android.provider.Settings.System.SCREEN_BRIGHTNESS, brightness);
 
-      ContentResolver resolver = this.cordova.getActivity().getContentResolver();
+			} else
+			{
 
-      Settings.System.putInt(resolver,
-        Settings.System.SCREEN_BRIGHTNESS_MODE,
-        Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
+				Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_WRITE_SETTINGS);
+				intent.setData(Uri.parse("package:" + ApplicationContext.getPackageName()));
+				intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+				cordova.getActivity().startActivity(intent);
 
-      Settings.System.putInt(resolver,
-        android.provider.Settings.System.SCREEN_BRIGHTNESS,
-        brightness);
+			}
 
-			callbackContext.success("OK");
+		}else{
+
+			Settings.System.putInt(resolver, Settings.System.SCREEN_BRIGHTNESS_MODE, Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
+			Settings.System.putInt(resolver, android.provider.Settings.System.SCREEN_BRIGHTNESS, brightness);
+
+		}
+
+		callbackContext.success("OK");
 
 		} catch (NullPointerException e) {
 			System.out.println("Null pointer exception");
@@ -134,10 +149,7 @@ public class BrightnessPlugin extends CordovaPlugin {
 			callbackContext.error(e.getMessage());
 			return false;
 		} catch (JSONException e) {
-			System.out.println("JSONException exception");
-			System.out.println(e.getMessage());
-			callbackContext.error(e.getMessage());
-			return false;
+			e.printStackTrace();
 		}
 		System.out.println("All went fine.");
 		return true;
